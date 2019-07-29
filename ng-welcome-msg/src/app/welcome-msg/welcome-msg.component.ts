@@ -1,4 +1,5 @@
 import { Component, AfterViewInit } from '@angular/core';
+import { I18nSupportService } from '../i18n-support.service'
 import { ThrowStmt } from '@angular/compiler';
 
 @Component({
@@ -10,6 +11,11 @@ export class WelcomeMsgComponent implements AfterViewInit {
   userName = '';
   private valid = false;
   private static CHK_KEYUP_WAIT_SEC = 5000;
+  welcomeMsg :string;
+
+  constructor(public i18nSupporter:I18nSupportService){
+    
+  } 
 
   ngAfterViewInit(){
     const checkTouchedFn = () =>{
@@ -21,5 +27,8 @@ export class WelcomeMsgComponent implements AfterViewInit {
   }
   onChange(){
     this.valid = this.userName.length > 0;
+  }
+  showWelcomeMsg(){
+    this.welcomeMsg = this.i18nSupporter.getWelocmMsg(this.userName);
   }
 }

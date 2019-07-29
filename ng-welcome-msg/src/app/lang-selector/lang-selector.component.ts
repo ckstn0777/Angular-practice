@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { I18nSupportService } from '../i18n-support.service'
+import { LANG_METADATA } from '../lang-metadata'
 
 @Component({
   selector: 'app-lang-selector',
@@ -7,9 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LangSelectorComponent implements OnInit {
   langCode:string;
+  private langMetadata;
 
-  constructor() {
-    this.langCode = 'ko';
+  constructor(public i18nSupporter:I18nSupportService) {
+    this.langCode = i18nSupporter.langCode;
+    this.langMetadata = LANG_METADATA;
   }
 
   ngOnInit() {
@@ -17,5 +21,6 @@ export class LangSelectorComponent implements OnInit {
 
   setLangCode(code:string){
     this.langCode = code;
+    this.i18nSupporter.langCode=code;
   }
 }
