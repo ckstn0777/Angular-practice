@@ -10,13 +10,16 @@ import { PostsService } from '../posts.service';
 })
 export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
+  isLoding = false;
   private postsSub: Subscription;
   constructor(public postsService: PostsService) {}
 
   ngOnInit() {
     this.postsService.getPosts(); // 방송국 생성, 데이터 생성
+    this.isLoding = true;
     this.postsSub = this.postsService.getPostUpdateListener()
     .subscribe((posts: Post[]) => { // 구독자 생성후 방송국의 데이터를 전송받음
+      this.isLoding = false;
       this.posts = posts;
     });
   }

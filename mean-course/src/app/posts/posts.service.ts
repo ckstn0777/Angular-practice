@@ -1,6 +1,7 @@
 import { Post } from './post.model';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -9,7 +10,7 @@ export class PostsService {
     private posts: Post[] = [];
     private postsUpdated = new Subject<Post[]>();
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private router: Router) {}
 
     getPosts() {
       this.http.get<{message: string, posts: Post[]}>('http://localhost:3000/api/posts')
@@ -32,6 +33,10 @@ export class PostsService {
       return this.postsUpdated.asObservable(); // 구독신청. 구독자 생성
     }
 
+    getPost(id: string) {
+      return this.http.get<{id: string, title: string, content: string}>("http://localhost:3000/api/posts/" + id);
+    }
+
     addPost(title: string, content: string) {
         const post: Post = { id: null, title: title, content: content};
         this.http.post<{message: string}>('http://localhost:3000/api/posts', post)
@@ -39,6 +44,23 @@ export class PostsService {
               console.log(responseData.message);
               this.posts.push(post);
               this.postsUpdated.next(this.posts);
+              this.router.navigate(["/"]);
+          });
+    }
+
+    updatePost(id: string, title: string, content: string) {
+      console.log('update');
+      const post: Post = {id: id, title: title, content: content};
+      this.http.put<{message: string}>('http://localhost:3000/api/posts/' + id, post)
+          .subscribe((responseData) => {
+              const updatePosts = [...this.posts];
+              const oldPostIndex = updatePosts.findIndex(p => p.id == post.id);
+              updatePosts[oldPostIndex] = post;
+              this.posts = updatePosts;
+              this.postsUpdated.next([...this.posts]);
+              this.router.navigate(["/"]);
+              // console.log(responseData.message);
+              // this.postsUpdated.next(this.posts);
           });
     }
 

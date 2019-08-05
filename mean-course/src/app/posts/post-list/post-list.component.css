@@ -2,6 +2,10 @@
   display:block;
   margin-top:1em;
 }
+mat-spinner{
+  margin:auto;
+}
+
 .info-text {
   text-align: center;
 }
