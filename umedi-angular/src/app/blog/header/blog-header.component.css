@@ -1,13 +1,8 @@
-ul {
-  list-style: none;
+nav {
   margin:0;
-  padding:0;
 }
-a {
-  text-decoration: none;
-  color:black;
-  margin-right:30px;
-}
-.spacer {
-  flex: 1 1 auto;
+.carousel-inner > .item > img {
+  width: 50%;
+  height: 20%;
+  margin:auto;
 }
