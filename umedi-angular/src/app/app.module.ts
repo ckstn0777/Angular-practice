@@ -4,18 +4,21 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { MatToolbarModule } from '@angular/material';
 
-import { BlogHeaderComponent } from './blog/header/blog-header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppRoutingModule } from './app-routing.module';
+
+// 기능 모듈 등록
+import { HomeModule } from './blog/home/home.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    BlogHeaderComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MatToolbarModule
+    AppRoutingModule,
+    HomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
