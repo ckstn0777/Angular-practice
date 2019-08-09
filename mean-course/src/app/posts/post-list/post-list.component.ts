@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Post } from '../post.model';
 import { PostsService } from '../posts.service';
+import { PageEvent } from '@angular/material';
 
 @Component ({
   selector: 'app-post-list',
@@ -11,11 +12,21 @@ import { PostsService } from '../posts.service';
 export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   isLoding = false;
+  totalPosts = 10;
+  postsPerPage = 2;
+  currentPage = 1;
+  pageSizeOptions = [1, 2, 5, 10];
   private postsSub: Subscription;
   constructor(public postsService: PostsService) {}
 
+  onChangePage(pageData: PageEvent) {
+    this.currentPage = pageData.pageIndex + 1;
+    this.postsPerPage = pageData.pageSize;
+    this.postsService.getPosts(this.postsPerPage, this.currentPage); // 방송국 생성, 데이터 생성
+  }
+
   ngOnInit() {
-    this.postsService.getPosts(); // 방송국 생성, 데이터 생성
+    this.postsService.getPosts(this.postsPerPage, this.currentPage); // 방송국 생성, 데이터 생성
     this.isLoding = true;
     this.postsSub = this.postsService.getPostUpdateListener()
     .subscribe((posts: Post[]) => { // 구독자 생성후 방송국의 데이터를 전송받음

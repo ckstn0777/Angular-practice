@@ -12,14 +12,16 @@ export class PostsService {
 
     constructor(private http: HttpClient, private router: Router) {}
 
-    getPosts() {
-      this.http.get<{message: string, posts: Post[]}>('http://localhost:3000/api/posts')
+    getPosts(postsPerPage: number, currentPage: number) {
+      const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
+      this.http.get<{message: string, posts: Post[]}>('http://localhost:3000/api/posts' + queryParams)
         .pipe(map((postData) => {
           return postData.posts.map(post => {
             return {
               title: post.title,
               content: post.content,
-              id: post.id
+              id: post.id,
+              imagePath : post.imagePath
             };
           });
         }))
@@ -34,31 +36,54 @@ export class PostsService {
     }
 
     getPost(id: string) {
-      return this.http.get<{id: string, title: string, content: string}>("http://localhost:3000/api/posts/" + id);
+      return this.http.get<{id: string, title: string, content: string, imagePath: string}>('http://localhost:3000/api/posts/' + id);
     }
 
-    addPost(title: string, content: string) {
-        const post: Post = { id: null, title: title, content: content};
-        this.http.post<{message: string}>('http://localhost:3000/api/posts', post)
-          .subscribe((responseData) => {
-              console.log(responseData.message);
-              this.posts.push(post);
-              this.postsUpdated.next(this.posts);
-              this.router.navigate(["/"]);
-          });
-    }
+    addPost(title: string, content: string, image: File) {
+      const postDate = new FormData();
+      postDate.append("title", title);
+      postDate.append("content", content);
+      postDate.append("image", image, title);
 
-    updatePost(id: string, title: string, content: string) {
+      this.http.post<{message: string, post: Post}>('http://localhost:3000/api/posts', postDate)
+        .subscribe((responseData) => {
+            console.log(responseData);
+
+            const post: Post = {
+              id: null,
+              title: responseData.post[0],
+              content: responseData.post[1],
+              imagePath: responseData.post[2]
+            };
+            this.posts.push(post);
+
+            this.postsUpdated.next(this.posts);
+            this.router.navigate(['/']);
+        });
+  }
+    updatePost(id: string, title: string, content: string, image: File | string) {
       console.log('update');
-      const post: Post = {id: id, title: title, content: content};
-      this.http.put<{message: string}>('http://localhost:3000/api/posts/' + id, post)
+      let postData: Post | FormData;
+      // 이미지 객체인 경우 -> form 형식 전달
+      if(typeof(image) === 'object') {
+        postData = new FormData();
+        postData.append("id", id);
+        postData.append("title", title);
+        postData.append("content", content);
+        postData.append("image", image);
+      }
+      else{ // 이미지 경로인 경우 -> json형식 전달
+        postData = {id: id, title: title, content: content, imagePath: image};
+      }
+      this.http.put<{message: string, imagePath: string}>('http://localhost:3000/api/posts/' + id, postData)
           .subscribe((responseData) => {
               const updatePosts = [...this.posts];
-              const oldPostIndex = updatePosts.findIndex(p => p.id == post.id);
+              const oldPostIndex = updatePosts.findIndex(p => p.id == id);
+              const post: Post = {id: id, title: title, content: content, imagePath: responseData.imagePath}
               updatePosts[oldPostIndex] = post;
               this.posts = updatePosts;
               this.postsUpdated.next([...this.posts]);
-              this.router.navigate(["/"]);
+              this.router.navigate(['/']);
               // console.log(responseData.message);
               // this.postsUpdated.next(this.posts);
           });

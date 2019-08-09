@@ -1,0 +1,14 @@
+:host > div {
+  width:70%;
+  margin: 50px auto;
+  text-align: center;
+}
+.example-card {
+  max-width: 400px;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+

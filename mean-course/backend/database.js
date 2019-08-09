@@ -36,8 +36,8 @@ const database = (sql,data,cb) => {
       callback(null,result);
     }
   ],(err,result)=>{
-    console.log('error: ',err);
-    return cb(result);
+    //console.log('error: ',err);
+    return cb(err,result);
   });
 }
 

@@ -1,10 +1,11 @@
 // app-routing.module.ts
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
+import { LoginComponent } from './blog/login/login.component';
 // 라우트 구성
 const routes: Routes = [
-  { path: '', redirectTo: '/home',  pathMatch: 'full' }
+  { path: '', redirectTo: '/home',  pathMatch: 'full' },
+  { path: 'login', component: LoginComponent }
 ];
 
 @NgModule({
