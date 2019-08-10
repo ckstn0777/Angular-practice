@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+const checkAuth = require('../middleware/check-auth');
 const router = express.Router();
 const mysql = require('../database');
 
@@ -25,7 +26,7 @@ const storage = multer.diskStorage({
   }
 });
 
-router.post('', multer({storage:storage}).single("image"), (req,res,next)=>{
+router.post('', checkAuth, multer({storage:storage}).single("image"), (req,res,next)=>{
   const post = req.body;
   const url = req.protocol + '://' + req.get("host");
   let sql = 'insert into postschema(title,content,imagePath) values (?,?,?)';
@@ -42,7 +43,7 @@ router.post('', multer({storage:storage}).single("image"), (req,res,next)=>{
   });
 });
 
-router.put("/:id", multer({storage:storage}).single("image"), (req,res)=>{
+router.put("/:id", checkAuth, multer({storage:storage}).single("image"), (req,res)=>{
   let imagePath = req.body.imagePath; //string으로 전달받을때
   if(req.file){ //파일로 전달받을때
     const url = req.protocol + '://' + req.get("host");
@@ -89,7 +90,7 @@ router.get("/:id",(req,res,next)=>{
   });
 });
 
-router.delete("/:id",(req,res,next)=>{
+router.delete("/:id", checkAuth, (req,res,next)=>{
   console.log('id',req.params.id);
   let sql = 'delete from postschema where id=?';
   let data = req.params.id;
