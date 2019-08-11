@@ -12,6 +12,7 @@ export class PostsService {
 
     constructor(private http: HttpClient, private router: Router) {}
 
+    // 게시글 불러오기
     getPosts(postsPerPage: number, currentPage: number) {
       const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
       this.http.get<{message: string, posts: Post[]}>('http://localhost:3000/api/posts' + queryParams)
@@ -21,7 +22,8 @@ export class PostsService {
               title: post.title,
               content: post.content,
               id: post.id,
-              imagePath : post.imagePath
+              imagePath : post.imagePath,
+              creator: post.creator
             };
           });
         }))
@@ -36,7 +38,7 @@ export class PostsService {
     }
 
     getPost(id: string) {
-      return this.http.get<{id: string, title: string, content: string, imagePath: string}>('http://localhost:3000/api/posts/' + id);
+      return this.http.get<{id: string, title: string, content: string, imagePath: string, creator: string}>('http://localhost:3000/api/posts/' + id);
     }
 
     addPost(title: string, content: string, image: File) {
@@ -53,7 +55,8 @@ export class PostsService {
               id: null,
               title: responseData.post[0],
               content: responseData.post[1],
-              imagePath: responseData.post[2]
+              imagePath: responseData.post[2],
+              creator: null
             };
             this.posts.push(post);
 
@@ -73,13 +76,13 @@ export class PostsService {
         postData.append("image", image);
       }
       else{ // 이미지 경로인 경우 -> json형식 전달
-        postData = {id: id, title: title, content: content, imagePath: image};
+        postData = {id: id, title: title, content: content, imagePath: image, creator: null};
       }
       this.http.put<{message: string, imagePath: string}>('http://localhost:3000/api/posts/' + id, postData)
           .subscribe((responseData) => {
               const updatePosts = [...this.posts];
               const oldPostIndex = updatePosts.findIndex(p => p.id == id);
-              const post: Post = {id: id, title: title, content: content, imagePath: responseData.imagePath}
+              const post: Post = {id: id, title: title, content: content, imagePath: responseData.imagePath, creator: null}
               updatePosts[oldPostIndex] = post;
               this.posts = updatePosts;
               this.postsUpdated.next([...this.posts]);

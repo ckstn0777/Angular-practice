@@ -18,6 +18,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
   userIsAuthenticated = false;
+  userId: string;
   private postsSub: Subscription;
   private authStatusSub: Subscription;
 
@@ -32,17 +33,19 @@ export class PostListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.postsService.getPosts(this.postsPerPage, this.currentPage); // 방송국 생성, 데이터 생성
     this.isLoding = true;
+    this.userId = this.authService.getUserId();
     this.postsSub = this.postsService.getPostUpdateListener()
     .subscribe((posts: Post[]) => { // 구독자 생성후 방송국의 데이터를 전송받음
       this.isLoding = false;
       this.posts = posts;
     });
     this.userIsAuthenticated = this.authService.getIsAuth();
-    console.log('1', this.userIsAuthenticated);
+    // console.log('1', this.userIsAuthenticated);
 
     // 이건 안된다는거네. 왜 안되는지 모른다면 cold, hot observable에 대해 공부하고 오시길.
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(isAuthenticated => {
-      console.log('2', isAuthenticated);
+      // console.log('2', isAuthenticated);
+      this.userId = this.authService.getUserId();
       this.userIsAuthenticated = isAuthenticated;
     });
   }
