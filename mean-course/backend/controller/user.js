@@ -55,7 +55,7 @@ exports.userLogin = (req,res,next) => {
       });
     },
     (user,callback) => {
-      const token = jwt.sign({email: user[0].email}, 'secret_this_should_be_longer',{expiresIn: '1h'});
+      const token = jwt.sign({email: user[0].email}, process.env.JWT_KEY,{expiresIn: '1h'});
       callback(null,token,user);
     }
   ],(err,token,user)=>{

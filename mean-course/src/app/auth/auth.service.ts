@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { AuthData } from './auth-data.module';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
+
+const BACKED_URL = environment.apiUrl + '/user/'; // 전역 변수,설정값을 environment에 저장
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +37,7 @@ export class AuthService {
 
   createUser(email: string, password: string) {
     const authData: AuthData = {email: email, password: password};
-    return this.http.post("http://localhost:3000/api/user/signup", authData)
+    return this.http.post(BACKED_URL + '/signup', authData)
       .subscribe(() => { // 회원가입 성공적이면
         this.router.navigate(['/']);
       }, error => { // 회원가입 시 서버에서 에러가 발생해서 에러를 넘겨받으면
@@ -64,7 +67,7 @@ export class AuthService {
 
   login(email: string, password: string) {
     const authData: AuthData = {email: email, password: password};
-    this.http.post<{token: string, expiresIn: number, userId: string}>("http://localhost:3000/api/user/login", authData)
+    this.http.post<{token: string, expiresIn: number, userId: string}>(BACKED_URL + '/login', authData)
       .subscribe(response => {
         const token = response.token;
         this.token = token;

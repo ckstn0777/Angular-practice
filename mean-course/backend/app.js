@@ -9,7 +9,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 
-app.use("/images", express.static(path.join("backend/images"))); //접근허가
+app.use("/images", express.static(path.join(__dirname, "images"))); //접근허가
+// app.use("/", express.static(path.join(__dirname,"angular"))); //접근허가
 
 app.use((req,res,next)=>{
   res.setHeader('Access-Control-Allow-Origin','*');
@@ -20,5 +21,10 @@ app.use((req,res,next)=>{
 
 app.use("/api/posts", postsRouter);
 app.use("/api/user", userRouter);
+/*
+app.use((req,res,next)=>{
+  res.sendFile(path.join(__dirname, "angular", "index.html"));
+});
+*/
 
 module.exports = app;

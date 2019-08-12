@@ -40,17 +40,19 @@ exports.updatePost = (req,res,next)=>{
       return;
     }
 
-    if(result.affectedRows>0){
+    //if(result.changeRows>0){
       res.status(200).json({
         message:"Update successful!",
         imagePath: imagePath
       });
+    /* 굳이 해줄필요가 없는데...? 권한없는 사용
     }else{
       res.status(401).json({
         message:"Not authorized!",
         imagePath: imagePath
       });
     }
+    */
   });
 }
 

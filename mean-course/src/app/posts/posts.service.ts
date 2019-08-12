@@ -4,6 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
+const BACKED_URL = environment.apiUrl + '/posts/'; // 전역 변수,설정값을 environment에 저장
 
 @Injectable({providedIn: 'root'})
 export class PostsService {
@@ -15,7 +18,7 @@ export class PostsService {
     // 게시글 불러오기
     getPosts(postsPerPage: number, currentPage: number) {
       const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
-      this.http.get<{message: string, posts: Post[]}>('http://localhost:3000/api/posts' + queryParams)
+      this.http.get<{message: string, posts: Post[]}>(BACKED_URL + queryParams)
         .pipe(map((postData) => {
           return postData.posts.map(post => {
             return {
@@ -38,7 +41,7 @@ export class PostsService {
     }
 
     getPost(id: string) {
-      return this.http.get<{id: string, title: string, content: string, imagePath: string, creator: string}>('http://localhost:3000/api/posts/' + id);
+      return this.http.get<{id: string, title: string, content: string, imagePath: string, creator: string}>(BACKED_URL + id);
     }
 
     addPost(title: string, content: string, image: File) {
@@ -47,7 +50,7 @@ export class PostsService {
       postDate.append("content", content);
       postDate.append("image", image, title);
 
-      this.http.post<{message: string, post: Post}>('http://localhost:3000/api/posts', postDate)
+      this.http.post<{message: string, post: Post}>(BACKED_URL, postDate)
         .subscribe((responseData) => {
             console.log(responseData);
 
@@ -78,7 +81,7 @@ export class PostsService {
       else{ // 이미지 경로인 경우 -> json형식 전달
         postData = {id: id, title: title, content: content, imagePath: image, creator: null};
       }
-      this.http.put<{message: string, imagePath: string}>('http://localhost:3000/api/posts/' + id, postData)
+      this.http.put<{message: string, imagePath: string}>(BACKED_URL + id, postData)
           .subscribe((responseData) => {
               const updatePosts = [...this.posts];
               const oldPostIndex = updatePosts.findIndex(p => p.id == id);
@@ -93,7 +96,7 @@ export class PostsService {
     }
 
     deletePost(postId: string) {
-      this.http.delete<{message: string}>('http://localhost:3000/api/posts/' + postId)
+      this.http.delete<{message: string}>(BACKED_URL + postId)
         .subscribe((responseData) => {
           console.log(responseData.message);
           const updatedPosts = this.posts.filter(post => post.id !== postId);
