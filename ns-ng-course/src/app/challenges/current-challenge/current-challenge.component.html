@@ -1,0 +1,5 @@
+<StackLayout>
+    <TextField hint="Challeng title" [(ngModel)]="challengDescription"></TextField>
+    <Button class="btn" text="Set Challenge" (tap)="onSetChallenge()"></Button>
+    <Label class="title" [text]="currentChallege"></Label>
+</StackLayout>
