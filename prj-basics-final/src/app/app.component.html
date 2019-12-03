@@ -1,0 +1,11 @@
+<!--자식이 발생시킨 featureSelected이벤트를 받아서 처리해줌 -> onNavigate가. $event는 전달받은 값-->
+<app-header (featureSelected)="onNavigate($event)"></app-header>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <!--라우팅을 아직 안배웠기 때문에 이렇게 해준거임.-->
+      <app-recipes *ngIf="loadedFeature === 'recipe'"></app-recipes>
+      <app-shopping-list *ngIf="loadedFeature === 'shopping-list'"></app-shopping-list>
+    </div>
+  </div>
+</div>
