@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-4">
+    <div class="list-group">
+      <!--http://localhost:4200/servers/5/edit?allowEdit=1#loading  쿼리문 지정가능, 프레그먼트 지정가능-->
+      <a
+        [routerLink]="['/servers', server.id]"
+        [queryParams]="{allowEdit: server.id === 3 ? '1' : '0'}"
+        fragment="loading"
+        href="#"
+        class="list-group-item"
+        *ngFor="let server of servers">
+        {{ server.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-4">
+    <!--routerLink="servers"라고 하면 or "./servers" 라고 하면 /servers/servers가 됨...현재경로에서 라우터경로 추가-->
+    <!--/servers라고 하면 or "../servers" /servers가 됨. 절대경로임. 단, 리로드는 안됨-->
+    <!--
+    <a routerLink="../servers">Reload Page</a>
+    <button class="btn btn-primary" (click)="onReload()">Reload Page</button>
+    <app-edit-server></app-edit-server>
+    <hr>
+    <app-server></app-server>
+    -->
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
