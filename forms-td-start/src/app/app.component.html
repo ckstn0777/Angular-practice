@@ -1,0 +1,76 @@
+<!--
+  용어 총 정리
+  1) ngModel 디렉티브 : 자신이 적용된 폼 컨트롤 요소의 값이나 유효성 검증 상태의 추적 기능을 제공하는 ​FormControl 인스턴스를 생성
+  2) FormContorl 인스턴스: 자신이 적용된 폼 컨트롤 요소의 값이나 유효성 검증 상태의 추적 기능을 제공
+  3) NgModelGroup 디렉티브 : ormGroup 인스턴스를 생성하고 NgModelGroup 디렉티브가 적용된 폼 그룹 요소의 자식 요소 중에서
+      NgModel 디렉티브가 적용된 요소를 탐색하여 FormGroup 인스턴스에 추가한다.
+  4) FormGroup 인스턴스: 자신의 자식인 FormControl 인스턴스들을 하나의 객체로 그룹화하여 관리하기 위한 최상위 컨테이너.
+      모든 FormControl 인스턴스의 값과 유효성 상태를 관리
+  5) ngForm 디렉티브 : NgForm 인스턴스를 생성
+  6) NgForm 인스턴스 : NgForm 디렉티브가 생성하는 인스턴스로서 폼 전체를 관리
+-->
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!--폼 데이터를 서버로 전송하고 페이지를 전환하는 submit 이벤트 기본 동작을 막고, 컴포넌트에서 처리할 수 있도록 하는 ngSubmit이벤트를 사용한다
+      참조 변수에는 ngForm을 할당하여 참조 변수가 네이티브 DOM이 아닌 NgForm인스턴스를 가리키도록 한다.-->
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <!--NgModelGroup 디렉티브는 NgForm 디렉티브와 유사하게 FormGroup 인스턴스를 생성
+        그룹 요소의 자식 요소 중에서 NgModel 디렉티브가 적용된 요소를 탐색하여 FormGroup 인스턴스에 추가-->
+        <div id="user-data" ngModelGroup="userData" #userData="ngModelGroup">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <!--ngModel 디렉티브. name 속성 반드시 지정할 것.
+            각 필드의 형식, 유효성 검증 규칙을 모두 템플릿에서 정의 ex) required-->
+            <input type="text" id="username" class="form-control" ngModel name="username" required>
+          </div>
+          <button class="btn btn-default" type="button" (click)="suggestUserName()">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <!--템플릿 참조 변수 email에 ngModel을 할당하면 email는 네이티브 DOM을 가리키지 않고 email 폼 컨트롤 요소를 가리키는 NgModel 인스턴스를 가리킨다.-->
+            <input type="email" id="email" class="form-control" ngModel name="email" required email #email="ngModel">
+            <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+          </div>
+        </div>
+        <p *ngIf="!userData.valid && userData.touched">User Data is invalid!</p>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <!--[ngModel]이렇게 프로퍼티 바인딩으로 사용하면 defaultQuestion으로 특정 단어를 주면 알아서
+          기본 select를 해주네;;; 와 개꿀팁 지렸음.-->
+          <select id="secret" class="form-control" [ngModel]="defaultQuestion" name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <!--ngModel을 이용한 two-binding. 양방향 바인딩은 ngModel 디렉티브와 ngModelChange 디렉티브 선언의 축약 표현으로 프로퍼티 바인딩과 이벤트 바인딩이 각각 처리된다
+          ngModel 프로퍼티 바인딩은 컴포넌트 프로퍼티 answer의 상태 변화를 수신하여 폼 컨트롤 요소의 상태를 업데이트하고
+          ngModelChange 이벤트 바인딩은 폼 컨트롤 요소의 상태 변화 이벤트를 방출하여 컴포넌트 프로퍼티 answer의 상태를 업데이트한다.
+        -->
+        <div class="form-group">
+          <textarea name="questionAnswer" rows="3" class="form-control" [(ngModel)]="answer"></textarea>
+        </div>
+        <p>Your reply: {{ answer }}</p>
+        <!--Handling Radio Buttons-->
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" name="gender" ngModel [value]="gender" required>
+            {{ gender }}
+          </label>
+        </div>
+        <!--ngForm 인스턴스에 valid속성이 false라면 버튼을 disabled시키겠다 이소리-->
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+  <hr>
+  <div class="row" *ngIf="submitted">
+    <div class="col-xs-12">
+      <h3>Your Data</h3>
+      <p>Username: {{user.username}}</p>
+      <p>Mail: </p>
+      <p>Secret Question: </p>
+      <p>Answer: </p>
+      <p>gender: </p>
+    </div>
+  </div>
+</div>

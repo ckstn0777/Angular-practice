@@ -1,0 +1,11 @@
+.container {
+  margin-top: 30px;
+}
+/*
+html을 잘보면 유효성검증이 된경우는 ng-valid class가 되어있고, 아니면 ng-invaild으로 바뀐다.
+터치를 해도 마찬가지로 ng-touched가 적용됨.
+그것을 이용한 css적용.
+*/
+input.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
